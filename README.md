@@ -23,8 +23,3 @@ in human chest/belly z-distance relative to the camera.
 For the DL part one of the many existing face detectors weight files will be utilized
 Here is a list of the reviewed once so far (will be updated):
  - https://github.com/akshat235/face-detection-yolov4-tiny
-
-
-
-
-# Ho Ho Ho
