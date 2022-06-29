@@ -1,14 +1,6 @@
-import time
-
-import PySimpleGUI as sg
 import cv2
 import numpy as np
 import pyrealsense2 as rs
-
-# https://dev.intelrealsense.com/docs/tuning-depth-cameras-for-best-performance
-# Intel RealSense D435: 848x480
-from src.classification.classifier import Classifier
-from utils import WIDTH, HEIGHT
 
 
 class Monitor:
@@ -17,8 +9,8 @@ class Monitor:
         self.pipeline = rs.pipeline()
 
         config = rs.config()
-        config.enable_stream(rs.stream.depth, WIDTH, HEIGHT, rs.format.z16, 30)
-        config.enable_stream(rs.stream.color, WIDTH, HEIGHT, rs.format.bgr8, 30)
+        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 15)
+        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 15)
 
         profile = self.pipeline.start(config)
         depth_sensor = profile.get_device().first_depth_sensor()
@@ -34,8 +26,6 @@ class Monitor:
         # align depth to color
         self.align_to = rs.stream.color
         self.align = rs.align(self.align_to)
-
-        self.classifier = Classifier()
         ##################################
 
         self.start()
@@ -92,10 +82,11 @@ class Monitor:
 
             cv2.rectangle(color_image_aligned, (x1, y1), (x2 + x1, y2 + y1), (255, 0, 0), 2)
 
-            breathe_rate = self.classifier.determine_roi_depth(color_image_aligned, roi, depth_frame, True)
-
 
             cv2.namedWindow('RealSense')
-            cv2.imshow('RealSense', color_image_aligned)
+            cv2.imshow('RealSense', depth_frame)
             if cv2.waitKey(1) & 0xFF == 27:
                 break
+
+if __name__ == "__main__":
+    obj = Monitor()
